@@ -51,3 +51,12 @@ services:
       - .env
     ports:
       - '5432:5432'
+
+  postgres_admin:
+    image: dpage/pgadmin4
+    env_file:
+      - .env
+    ports:
+      - '15432:80'
+    depends_on:
+      - postgres
