@@ -27,3 +27,20 @@ services:
       - /usr/src/app/node_modules
     command:
       - npm run start:dev auth
+
+  api:
+    build:
+      context: ./api
+      dockerfile: ./api/apps/auth/Dockerfile
+    ports:
+      - '4000:5000'
+    env_file:
+      - .env
+    depends_on:
+      - rabbitmq
+      - auth
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command:
+      - npm run start:dev api
