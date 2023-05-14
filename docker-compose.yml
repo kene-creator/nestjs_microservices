@@ -15,8 +15,8 @@ services:
 
   auth:
     build:
-      context: ./api
-      dockerfile: ./api/apps/auth/Dockerfile
+      context: ./
+      dockerfile: ./apps/auth/Dockerfile
     env_file:
       - .env
     depends_on:
@@ -25,13 +25,12 @@ services:
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
-    command:
-      - npm run start:dev auth
+    command: npm run start:dev auth
 
   api:
     build:
-      context: ./api
-      dockerfile: ./api/apps/auth/Dockerfile
+      context: ./
+      dockerfile: ./apps/auth/Dockerfile
     ports:
       - '4000:5000'
     env_file:
@@ -42,8 +41,7 @@ services:
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
-    command:
-      - npm run start:dev api
+    command: npm run start:dev api
 
   postgres:
     image: postgres
