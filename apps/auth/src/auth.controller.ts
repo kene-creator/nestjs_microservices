@@ -7,16 +7,21 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Get()
-  getHello(): string {
-    return this.authService.getHello();
-  }
-
-  @MessagePattern({ cmd: 'get-user' })
+  @MessagePattern({ cmd: 'get-users' })
   async getUser(@Ctx() context: RmqContext) {
     const channel = context.getChannelRef();
     const message = context.getMessage();
     channel.ack(message);
 
-    return { user: 'USER' };
+    return this.authService.getUsers();
+  }
+
+  @MessagePattern({ cmd: 'post-user' })
+  async postUser(@Ctx() context: RmqContext) {
+    const channel = context.getChannelRef();
+    const message = context.getMessage();
+    channel.ack(message);
+
+    return await this.authService.postUser();
   }
 }
