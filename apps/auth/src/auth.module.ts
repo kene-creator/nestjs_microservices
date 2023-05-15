@@ -19,8 +19,9 @@ import { dataSource, dataSourceOption } from './db/data-source';
       //   autoLoadEntities: true,
       //   synchronize: true, //! WARNING: This option should never be used in production - otherwise you can lose production data.
       // }),
-      useFactory: () => ({
+      useFactory: (configService: ConfigService) => ({
         ...dataSourceOption,
+        url: configService.get('POSTGRES_URI'),
         autoLoadEntities: true,
         synchronize: true, //! WARNING: This option should never be used in production - otherwise you can lose production data.
       }),
