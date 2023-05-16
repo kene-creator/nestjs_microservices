@@ -30,7 +30,7 @@ services:
   presence:
     build:
       context: ./
-      dockerfile: ./apps/auth/Dockerfile
+      dockerfile: ./apps/presence/Dockerfile
     env_file:
       - .env
     depends_on:
