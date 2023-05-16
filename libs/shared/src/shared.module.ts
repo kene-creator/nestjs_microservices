@@ -2,6 +2,7 @@ import { DynamicModule, Module } from '@nestjs/common';
 import { SharedService } from './shared.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
+import { AuthGuard } from './auth.guard';
 
 @Module({
   imports: [
@@ -10,8 +11,8 @@ import { ClientProxyFactory, Transport } from '@nestjs/microservices';
       envFilePath: './.env',
     }),
   ],
-  providers: [SharedService],
-  exports: [SharedService],
+  providers: [SharedService, AuthGuard],
+  exports: [SharedService, AuthGuard],
 })
 export class SharedModule {
   static registerRmq(service: string, queue: string): DynamicModule {
