@@ -1,8 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { PresenceService } from './presence.service';
 import { Ctx, MessagePattern, RmqContext } from '@nestjs/microservices';
-import { SharedService } from '@app/shared';
-import { AuthGuard } from '@app/shared/auth.guard';
+import { SharedService, AuthGuard } from '@app/shared';
 
 @Controller()
 export class PresenceController {
