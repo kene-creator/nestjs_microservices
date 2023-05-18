@@ -1,20 +1,41 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './user.entity';
 import { Repository } from 'typeorm';
 import { NewUserDto } from './dto/new-user.dto';
+import { JwtService } from '@nestjs/jwt';
 
 import * as bcrypt from 'bcrypt';
+import { ExistingUserDto } from './dto/existing-user.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepsitory: Repository<UserEntity>,
+    private readonly jwt: JwtService,
   ) {}
 
   async getUsers() {
     return await this.userRepsitory.find();
+  }
+
+  async login(existingUser: Readonly<ExistingUserDto>) {
+    const { email, password } = existingUser;
+
+    const user = await this.validateUser(email, password);
+
+    if (!user) {
+      throw new UnauthorizedException(`Invalid credentials`);
+    }
+
+    const jwt = this.getToken(user.id, email);
+
+    return { token: jwt };
   }
 
   async register(newUser: Readonly<NewUserDto>): Promise<UserEntity> {
@@ -50,5 +71,39 @@ export class AuthService {
 
   async hashPassword(password: string): Promise<string> {
     return bcrypt.hash(password, 12);
+  }
+
+  async comparePasswords(
+    password: string,
+    hashedPassword: string,
+  ): Promise<boolean> {
+    return bcrypt.compare(password, hashedPassword);
+  }
+
+  async validateUser(email: string, password: string): Promise<UserEntity> {
+    const user = await this.getUserByEmail(email);
+
+    const doesUserExist = !!user;
+
+    if (!doesUserExist) return null;
+
+    const isPasswordValid = await this.comparePasswords(
+      password,
+      user.password,
+    );
+
+    if (!isPasswordValid) return null;
+
+    return user;
+  }
+
+  async getToken(userId: number, email: string) {
+    const payload = { sub: userId, email };
+
+    const token = await this.jwt.signAsync(payload, {
+      secret: process.env.JWT_SECRET,
+    });
+
+    return token;
   }
 }
