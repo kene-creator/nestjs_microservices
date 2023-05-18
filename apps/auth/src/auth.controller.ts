@@ -8,6 +8,7 @@ import {
 } from '@nestjs/microservices';
 import { SharedService } from '@app/shared';
 import { NewUserDto } from './dto/new-user.dto';
+import { ExistingUserDto } from './dto/existing-user.dto';
 
 @Controller()
 export class AuthController {
@@ -28,5 +29,15 @@ export class AuthController {
     this.sharedService.acknowledgeMessage(context);
 
     return await this.authService.register(newUser);
+  }
+
+  @MessagePattern({ cmd: 'login' })
+  async login(
+    @Ctx() context: RmqContext,
+    @Payload() existingUser: ExistingUserDto,
+  ) {
+    this.sharedService.acknowledgeMessage(context);
+
+    return await this.authService.login(existingUser);
   }
 }
