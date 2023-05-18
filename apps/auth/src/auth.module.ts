@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
+import { SharedModule, PostgresDBModule } from '@app/shared';
+
 import { UserEntity } from './user.entity';
-import { dataSource, dataSourceOption } from './db/data-source';
-import { SharedModule } from '@app/shared';
-import { PostgresDBModule } from '@app/shared/postgredb.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
