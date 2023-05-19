@@ -7,12 +7,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { SharedModule, PostgresDBModule } from '@app/shared';
 
 import { UserEntity } from './user.entity';
+import { JwtModule } from '@nestjs/jwt';
+import { JwtGuard } from './jwt.guard';
+import { JwtStrategy } from './jwt-strategy';
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: './.env',
     }),
+    JwtModule.register({}),
     SharedModule,
     PostgresDBModule,
     // TypeOrmModule.forRootAsync({
@@ -34,6 +38,6 @@ import { UserEntity } from './user.entity';
     TypeOrmModule.forFeature([UserEntity]),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, JwtGuard, JwtStrategy],
 })
 export class AuthModule {}
