@@ -17,11 +17,27 @@ export class AuthService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepsitory: Repository<UserEntity>,
-    private readonly jwt: JwtService,
+    private readonly jwtService: JwtService,
   ) {}
 
   async getUsers() {
     return await this.userRepsitory.find();
+  }
+
+  async verifyJwt(jwt: string) {
+    if (!jwt) {
+      throw new UnauthorizedException('No token provided');
+    }
+
+    try {
+      const decoded = this.jwtService.verify(jwt, {
+        secret: process.env.JWT_SECRET,
+      });
+      const { exp } = decoded;
+      return { exp };
+    } catch (error) {
+      throw new UnauthorizedException('Invalid token for verify');
+    }
   }
 
   async login(existingUser: Readonly<ExistingUserDto>) {
@@ -33,7 +49,7 @@ export class AuthService {
       throw new UnauthorizedException(`Invalid credentials`);
     }
 
-    const jwt = this.getToken(user.id, email);
+    const jwt = await this.getToken(user.id, email);
 
     return { token: jwt };
   }
@@ -100,8 +116,10 @@ export class AuthService {
   async getToken(userId: number, email: string) {
     const payload = { sub: userId, email };
 
-    const token = await this.jwt.signAsync(payload, {
+    console.log(process.env.JWT_SECRET);
+    const token = await this.jwtService.signAsync(payload, {
       secret: process.env.JWT_SECRET,
+      expiresIn: 5000,
     });
 
     return token;
