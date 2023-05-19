@@ -11,6 +11,7 @@ import { SharedModule } from '@app/shared';
       envFilePath: './.env',
     }),
     SharedModule,
+    // SharedModule.registerRmq('AUTH_SERVICE', process.env.RABBITMQ_AUTH_QUEUE),
   ],
   controllers: [PresenceController],
   providers: [PresenceService],
