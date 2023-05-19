@@ -1,27 +1,29 @@
 import {
   ConflictException,
+  Inject,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+
 import { UserEntity } from './user.entity';
-import { Repository } from 'typeorm';
+import { FindOneOptions } from 'typeorm';
 import { NewUserDto } from './dto/new-user.dto';
 import { JwtService } from '@nestjs/jwt';
 
 import * as bcrypt from 'bcrypt';
 import { ExistingUserDto } from './dto/existing-user.dto';
+import { UserRepositoryInterface } from '@app/shared/interface/users.repository.interface';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(UserEntity)
-    private readonly userRepsitory: Repository<UserEntity>,
+    @Inject('UserRepositoryInterface')
+    private readonly userRepsitory: UserRepositoryInterface,
     private readonly jwtService: JwtService,
   ) {}
 
-  async getUsers() {
-    return await this.userRepsitory.find();
+  async getUsers(): Promise<UserEntity[]> {
+    return await this.userRepsitory.findAll();
   }
 
   async verifyJwt(jwt: string) {
@@ -79,10 +81,12 @@ export class AuthService {
   }
 
   async getUserByEmail(email: string): Promise<UserEntity> {
-    return await this.userRepsitory.findOne({
+    const filterCondition: FindOneOptions<UserEntity> = {
       where: { email },
       select: ['id', 'firstName', 'lastName', 'email', 'password'],
-    });
+    };
+
+    return await this.userRepsitory.findByCondition(filterCondition);
   }
 
   async hashPassword(password: string): Promise<string> {
@@ -113,7 +117,7 @@ export class AuthService {
     return user;
   }
 
-  async getToken(userId: number, email: string) {
+  async getToken(userId: number, email: string): Promise<string> {
     const payload = { sub: userId, email };
 
     console.log(process.env.JWT_SECRET);
