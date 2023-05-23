@@ -14,11 +14,6 @@ export class AppController {
     return this.authService.send({ cmd: 'get-users' }, {});
   }
 
-  @Post('auth')
-  async postUser() {
-    return this.authService.send({ cmd: 'post-user' }, {});
-  }
-
   @Post('auth/register')
   async register(
     @Body('firstName') firstName: string,
