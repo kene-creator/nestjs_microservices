@@ -51,9 +51,10 @@ export class AuthService {
       throw new UnauthorizedException(`Invalid credentials`);
     }
 
+    delete user.password;
     const jwt = await this.getToken(user.id, email);
 
-    return { token: jwt };
+    return { token: jwt, user };
   }
 
   async register(newUser: Readonly<NewUserDto>): Promise<UserEntity> {
