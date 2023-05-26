@@ -46,6 +46,9 @@ export class AppController {
     );
   }
 
+  @Post('add-friend/:friendId')
+  async addFriend() {}
+
   @UseGuards(AuthGuard)
   @Get('presence')
   async getPresence() {
