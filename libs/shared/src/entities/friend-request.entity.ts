@@ -9,4 +9,7 @@ export class FriendRequestEntity {
 
   @ManyToOne(() => UserEntity, (user) => user.friendRequestCreator)
   creator: UserEntity;
+
+  @ManyToOne(() => UserEntity, (user) => user.friendRequestReceiver)
+  receiver: UserEntity;
 }
