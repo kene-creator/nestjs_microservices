@@ -7,9 +7,6 @@ export class FriendRequestEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => UserEntity, (user) => user.friendRequests)
-  sender: UserEntity;
-
-  @ManyToOne(() => UserEntity, (user) => user.friendRequests)
-  receiver: UserEntity;
+  @ManyToOne(() => UserEntity, (user) => user.friendRequestCreator)
+  creator: UserEntity;
 }
