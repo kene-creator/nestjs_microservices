@@ -6,12 +6,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { SharedModule, PostgresDBModule, SharedService } from '@app/shared';
 
-import { UserEntity } from './user.entity';
+import { UserEntity } from '@app/shared';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtGuard } from './jwt.guard';
 import { JwtStrategy } from './jwt-strategy';
 import { UserRepository } from '@app/shared/repositories/user.repository';
 import { FriendRequestsRepository } from '@app/shared/repositories/friend-request.repository';
+import { FriendRequestEntity } from '@app/shared/entities/friend-request.entity';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -37,7 +38,7 @@ import { FriendRequestsRepository } from '@app/shared/repositories/friend-reques
     //   }),
     //   inject: [ConfigService],
     // }),
-    TypeOrmModule.forFeature([UserEntity]),
+    TypeOrmModule.forFeature([UserEntity, FriendRequestEntity]),
   ],
   controllers: [AuthController],
   providers: [
