@@ -53,4 +53,35 @@ export class AuthController {
 
     return await this.authService.verifyJwt(payload.jwt);
   }
+
+  @MessagePattern({ cmd: 'decode-jwt' })
+  async decodeJwt(
+    @Ctx() context: RmqContext,
+    @Payload() payload: { jwt: string },
+  ) {
+    this.sharedService.acknowledgeMessage(context);
+    console.log(1, payload.jwt);
+
+    return await this.authService.getUserFromHeader(payload.jwt);
+  }
+
+  @MessagePattern({ cmd: 'add-friend' })
+  async addFriend(
+    @Ctx() context: RmqContext,
+    @Payload() payload: { userId: number; friendId: number },
+  ) {
+    this.sharedService.acknowledgeMessage(context);
+
+    return await this.authService.addFriend(payload.userId, payload.friendId);
+  }
+
+  @MessagePattern({ cmd: 'get-friends' })
+  async getFriend(
+    @Ctx() context: RmqContext,
+    @Payload() payload: { userId: number },
+  ) {
+    this.sharedService.acknowledgeMessage(context);
+
+    return await this.authService.getFriends(payload.userId);
+  }
 }
