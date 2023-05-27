@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Inject,
   Injectable,
@@ -13,12 +14,18 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { ExistingUserDto } from './dto/existing-user.dto';
 import { UserRepositoryInterface } from '@app/shared/interface/users.repository.interface';
+import { UserJwt } from '@app/shared/interface/user-jwt.interface';
+import { FriendRequestEntity } from '@app/shared/entities/friend-request.entity';
+import { FriendRequestsRepository } from '@app/shared/repositories/friend-request.repository';
+import { UserRequest } from '@app/shared/interface/user-request.interface';
 
 @Injectable()
 export class AuthService {
   constructor(
     @Inject('UserRepositoryInterface')
     private readonly userRepsitory: UserRepositoryInterface,
+    @Inject('FriendRequestsRepositoryInterface')
+    private readonly friendRequestsRepository: FriendRequestsRepository,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -26,23 +33,25 @@ export class AuthService {
     return await this.userRepsitory.findAll();
   }
 
-  async verifyJwt(jwt: string) {
+  async verifyJwt(jwt: string): Promise<{ user: UserEntity; exp: number }> {
     if (!jwt) {
       throw new UnauthorizedException('No token provided');
     }
 
     try {
-      const decoded = this.jwtService.verify(jwt, {
+      const decoded = await this.jwtService.verifyAsync(jwt, {
         secret: process.env.JWT_SECRET,
       });
-      const { exp } = decoded;
-      return { exp };
+      const { user, exp } = decoded;
+      return { user, exp };
     } catch (error) {
       throw new UnauthorizedException('Invalid token for verify');
     }
   }
 
-  async login(existingUser: Readonly<ExistingUserDto>) {
+  async login(
+    existingUser: Readonly<ExistingUserDto>,
+  ): Promise<{ token: string; user: UserEntity }> {
     const { email, password } = existingUser;
 
     const user = await this.validateUser(email, password);
@@ -118,6 +127,39 @@ export class AuthService {
     return user;
   }
 
+  async getUserFromHeader(jwt: string) {
+    if (!jwt) return;
+
+    try {
+      const decoded = await this.jwtService.verifyAsync(jwt, {
+        secret: process.env.JWT_SECRET,
+      });
+      const user = await this.findById(decoded.sub);
+      return { user };
+    } catch (error) {
+      throw new BadRequestException();
+    }
+  }
+
+  async addFriend(
+    userId: number,
+    friendId: number,
+  ): Promise<FriendRequestEntity> {
+    const creator = await this.findById(userId);
+    const receiver = await this.findById(friendId);
+
+    return await this.friendRequestsRepository.save({ creator, receiver });
+  }
+
+  async getFriends(userId: number): Promise<FriendRequestEntity[]> {
+    const creator = await this.findById(userId);
+
+    return await this.friendRequestsRepository.findWithRelations({
+      where: [{ creator }, { receiver: creator }],
+      relations: ['creator', 'receiver'],
+    });
+  }
+
   async getToken(userId: number, email: string): Promise<string> {
     const payload = { sub: userId, email };
 
@@ -128,5 +170,9 @@ export class AuthService {
     });
 
     return token;
+  }
+
+  async findById(id: number): Promise<UserEntity> {
+    return this.userRepsitory.findOneById(id);
   }
 }
