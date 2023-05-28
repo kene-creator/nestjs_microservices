@@ -1,6 +1,6 @@
-import { Request } from 'express';
+// import { Request } from 'express';
 
-export interface UserRequest extends Request {
+export interface UserRequest {
   user?: {
     id: number;
     firstName: string;

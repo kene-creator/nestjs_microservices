@@ -11,6 +11,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { Observable, switchMap, catchError, tap } from 'rxjs';
 
 import { UserJwt } from '../interface/user-jwt.interface';
+import { UserRequest } from '../interface/user-request.interface';
 
 @Injectable()
 export class UserInterceptor implements NestInterceptor {
@@ -32,14 +33,16 @@ export class UserInterceptor implements NestInterceptor {
 
     const [, jwt] = authHeaderParts;
 
-    return this.authService.send({ cmd: 'decode-jwt' }, { jwt }).pipe(
-      tap((value) => console.log('Value emitted:', value)),
-      switchMap(({ user }) => {
-        console.log(4, user);
-        request.user = user;
-        return next.handle();
-      }),
-      catchError(() => next.handle()),
-    );
+    return this.authService
+      .send<UserRequest>({ cmd: 'decode-jwt' }, { jwt })
+      .pipe(
+        tap((value) => console.log('Value emitted:', value)),
+        switchMap(({ user }) => {
+          console.log(4, user);
+          request.user = user;
+          return next.handle();
+        }),
+        catchError(() => next.handle()),
+      );
   }
 }

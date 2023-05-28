@@ -127,7 +127,7 @@ export class AuthService {
     return user;
   }
 
-  async getUserFromHeader(jwt: string) {
+  async getUserFromHeader(jwt: string): Promise<UserRequest> {
     if (!jwt) return;
 
     try {
