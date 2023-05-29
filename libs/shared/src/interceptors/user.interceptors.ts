@@ -10,7 +10,7 @@ import { ClientProxy } from '@nestjs/microservices';
 
 import { Observable, switchMap, catchError, tap } from 'rxjs';
 
-import { UserJwt } from '../interface/user-jwt.interface';
+// import { UserJwt } from '../interface/user-jwt.interface';
 import { UserRequest } from '../interface/user-request.interface';
 
 @Injectable()

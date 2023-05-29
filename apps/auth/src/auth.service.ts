@@ -14,7 +14,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { ExistingUserDto } from './dto/existing-user.dto';
 import { UserRepositoryInterface } from '@app/shared/interface/users.repository.interface';
-import { UserJwt } from '@app/shared/interface/user-jwt.interface';
+// import { UserJwt } from '@app/shared/interface/user-jwt.interface';
 import { FriendRequestEntity } from '@app/shared/entities/friend-request.entity';
 import { FriendRequestsRepository } from '@app/shared/repositories/friend-request.repository';
 import { UserRequest } from '@app/shared/interface/user-request.interface';
