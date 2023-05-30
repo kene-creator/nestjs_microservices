@@ -36,6 +36,7 @@ services:
     depends_on:
       - rabbitmq
       - postgres
+      - redis
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
@@ -75,3 +76,13 @@ services:
       - '15432:80'
     depends_on:
       - postgres
+
+  redis:
+    image: redis
+    command: /bin/sh -c "redis-server --requirepass $$REDIS_PASS"
+    ports:
+      - '6379:6379'
+    volumes:
+      - ./redis/data:/data
+    env_file:
+      - .env

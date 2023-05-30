@@ -1,12 +1,12 @@
 //? modules
-export * from './shared.module';
-export * from './postgredb.module';
+export * from './modules/shared.module';
+export * from './modules/postgredb.module';
 
 //? services
-export * from './shared.service';
+export * from './services/shared.service';
 
 //? guards
-export * from './auth.guard';
+export * from './guards/auth.guard';
 
 //? repositories
 export * from './repositories/base/base.interface.repository';
