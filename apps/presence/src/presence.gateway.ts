@@ -2,8 +2,8 @@ import { Inject } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { ClientProxy } from '@nestjs/microservices';
 import {
-  OnGatewayConnection,
-  OnGatewayDisconnect,
+//   OnGatewayConnection,
+//   OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
