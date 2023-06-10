@@ -13,6 +13,8 @@ import { JwtStrategy } from './jwt-strategy';
 import { UserRepository } from '@app/shared/repositories/user.repository';
 import { FriendRequestsRepository } from '@app/shared/repositories/friend-request.repository';
 import { FriendRequestEntity } from '@app/shared/entities/friend-request.entity';
+import { ConversationEntity } from '@app/shared/entities/conversation.entity';
+import { MessageEntity } from '@app/shared/entities/message.entity';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -38,7 +40,12 @@ import { FriendRequestEntity } from '@app/shared/entities/friend-request.entity'
     //   }),
     //   inject: [ConfigService],
     // }),
-    TypeOrmModule.forFeature([UserEntity, FriendRequestEntity]),
+    TypeOrmModule.forFeature([
+      UserEntity,
+      FriendRequestEntity,
+      ConversationEntity,
+      MessageEntity,
+    ]),
   ],
   controllers: [AuthController],
   providers: [

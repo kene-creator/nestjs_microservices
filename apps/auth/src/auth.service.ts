@@ -33,6 +33,8 @@ export class AuthService {
     return await this.userRepsitory.findAll();
   }
 
+  async getUserById(id: number) {}
+
   async verifyJwt(jwt: string): Promise<{ user: UserEntity; exp: number }> {
     if (!jwt) {
       throw new UnauthorizedException('No token provided');
@@ -158,6 +160,30 @@ export class AuthService {
       where: [{ creator }, { receiver: creator }],
       relations: ['creator', 'receiver'],
     });
+  }
+
+  async getFriendsList(userId: number) {
+    const friendRequests = await this.getFriends(userId);
+
+    if (!friendRequests) return [];
+
+    const friends = friendRequests.map((friendRequest) => {
+      const isUserCreator = userId === friendRequest.creator.id;
+
+      const friendDetials = isUserCreator
+        ? friendRequest.receiver
+        : friendRequest.creator;
+
+      const { id, firstName, lastName, email } = friendDetials;
+
+      return {
+        id,
+        firstName,
+        lastName,
+        email,
+      };
+    });
+    return friends;
   }
 
   async getToken(userId: number, email: string): Promise<string> {
