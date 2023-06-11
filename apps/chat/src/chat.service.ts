@@ -75,10 +75,14 @@ export class ChatService {
 
     if (!user) return;
 
-    const conversation = await this.conversationsRepository.findByCondition({
-      where: [{ id: newMessage.conversationId }],
-      relations: ['users'],
-    });
+    // const conversation = await this.conversationsRepository.findByCondition({
+    //   where: [{ id: newMessage.conversationId }],
+    //   relations: ['users'],
+    // });
+    const conversation = await this.conversationsRepository.findConversation(
+      userId,
+      newMessage.friendId,
+    );
 
     if (!conversation) return;
 
