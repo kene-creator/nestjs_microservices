@@ -30,7 +30,7 @@ export class PresenceGateway
   @WebSocketServer()
   server: Server;
 
-  //! Remove in Production
+  //! Only for development
   async onModuleInit() {
     await this.cache.reset();
   }
