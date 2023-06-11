@@ -2,8 +2,8 @@ import { Inject } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { ClientProxy } from '@nestjs/microservices';
 import {
-//   OnGatewayConnection,
-//   OnGatewayDisconnect,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
@@ -19,7 +19,9 @@ import { UserRequest } from '@app/shared/interface/user-request.interface';
 import { ActiveUser } from './interfaces/ActiveUser.interface';
 
 @WebSocketGateway({ cors: true })
-export class PresenceGateway {
+export class PresenceGateway
+  implements OnGatewayConnection, OnGatewayDisconnect
+{
   constructor(
     @Inject('AUTH_SERVICE') private readonly authService: ClientProxy,
     @Inject(CACHE_MANAGER) private readonly cache: Cache,
