@@ -4,6 +4,7 @@ import { MessagesRepositoryInterface } from '@app/shared/interface/message.repos
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
+import { NewMessageDto } from './dto/NewMessageDto';
 
 @Injectable()
 export class ChatService {
@@ -47,5 +48,44 @@ export class ChatService {
       id: conversation.id,
       userIds: (conversation?.users ?? []).map((user) => user.id),
     }));
+  }
+
+  async createConversation(userId: number, friendId: number) {
+    const user = await this.getUser(userId);
+    const friend = await this.getUser(friendId);
+
+    if (!user || !friend) return;
+
+    const conversation = await this.conversationsRepository.findConversation(
+      userId,
+      friendId,
+    );
+
+    if (!conversation) {
+      return await this.conversationsRepository.save({
+        users: [user, friend],
+      });
+    }
+
+    return conversation;
+  }
+
+  async createMessage(userId: number, newMessage: NewMessageDto) {
+    const user = await this.getUser(userId);
+
+    if (!user) return;
+
+    const conversation = await this.conversationsRepository.findByCondition({
+      where: [{ id: newMessage.conversationId }],
+      relations: ['users'],
+    });
+
+    if (!conversation) return;
+
+    return await this.messagesRepository.save({
+      message: newMessage.message,
+      user,
+      conversation,
+    });
   }
 }
