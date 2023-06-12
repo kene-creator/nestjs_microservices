@@ -140,11 +140,26 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       newMessage,
     );
 
-    const friendId = createdMessage.conversation.users.find(
-      (u) => u.id !== user.id,
-    ).id;
+    const ob$ = this.presenceService.send(
+      {
+        cmd: 'get-active-user',
+      },
+      {
+        id: newMessage.friendId,
+      },
+    );
 
-    const friendDetails = await this.getFriendDetails(friendId);
+    const activeFriend = await firstValueFrom(ob$).catch((err) =>
+      console.error(err),
+    );
+
+    if (!activeFriend || !activeFriend.isActive) return;
+
+    // const friendId = createdMessage.conversation.users.find(
+    //   (u) => u.id !== user.id,
+    // ).id;
+
+    const friendDetails = await this.getFriendDetails(newMessage.friendId);
 
     if (!friendDetails) return;
 
