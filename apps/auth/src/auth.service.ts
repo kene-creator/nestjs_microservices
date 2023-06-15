@@ -23,17 +23,19 @@ import { UserRequest } from '@app/shared/interface/user-request.interface';
 export class AuthService {
   constructor(
     @Inject('UserRepositoryInterface')
-    private readonly userRepsitory: UserRepositoryInterface,
+    private readonly userRepository: UserRepositoryInterface,
     @Inject('FriendRequestsRepositoryInterface')
     private readonly friendRequestsRepository: FriendRequestsRepository,
     private readonly jwtService: JwtService,
   ) {}
 
   async getUsers(): Promise<UserEntity[]> {
-    return await this.userRepsitory.findAll();
+    return await this.userRepository.findAll();
   }
 
-  async getUserById(id: number) {}
+  async getUserById(id: number): Promise<UserEntity> {
+    return await this.userRepository.findOneById(id);
+  }
 
   async verifyJwt(jwt: string): Promise<{ user: UserEntity; exp: number }> {
     if (!jwt) {
@@ -81,7 +83,7 @@ export class AuthService {
 
     const hashedPassword = await this.hashPassword(password);
 
-    const savedUser = await this.userRepsitory.save({
+    const savedUser = await this.userRepository.save({
       firstName,
       lastName,
       email,
@@ -98,7 +100,7 @@ export class AuthService {
       select: ['id', 'firstName', 'lastName', 'email', 'password'],
     };
 
-    return await this.userRepsitory.findByCondition(filterCondition);
+    return await this.userRepository.findByCondition(filterCondition);
   }
 
   async hashPassword(password: string): Promise<string> {
@@ -199,6 +201,6 @@ export class AuthService {
   }
 
   async findById(id: number): Promise<UserEntity> {
-    return this.userRepsitory.findOneById(id);
+    return this.userRepository.findOneById(id);
   }
 }
