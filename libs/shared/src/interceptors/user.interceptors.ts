@@ -38,7 +38,6 @@ export class UserInterceptor implements NestInterceptor {
       .pipe(
         tap((value) => console.log('Value emitted:', value)),
         switchMap(({ user }) => {
-          console.log(4, user);
           request.user = user;
           return next.handle();
         }),

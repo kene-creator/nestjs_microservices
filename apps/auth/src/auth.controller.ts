@@ -70,7 +70,6 @@ export class AuthController {
     @Payload() payload: { jwt: string },
   ) {
     this.sharedService.acknowledgeMessage(context);
-    console.log(1, payload.jwt);
 
     return await this.authService.getUserFromHeader(payload.jwt);
   }
