@@ -24,22 +24,6 @@ import { MessageEntity } from '@app/shared/entities/message.entity';
     JwtModule.register({}),
     SharedModule,
     PostgresDBModule,
-    // TypeOrmModule.forRootAsync({
-    //   imports: [ConfigModule],
-    //    useFactory: (configService: ConfigService) => ({
-    //      type: 'postgres',
-    //      url: configService.get('POSTGRES_URI'),
-    //      autoLoadEntities: true,
-    //      synchronize: true, //! WARNING: This option should never be used in production - otherwise you can lose production data.
-    //    }),
-    //   useFactory: (configService: ConfigService) => ({
-    //     ...dataSourceOption,
-    //     url: configService.get('POSTGRES_URI'),
-    //     autoLoadEntities: true,
-    //     synchronize: true, //! WARNING: This option should never be used in production - otherwise you can lose production data.
-    //   }),
-    //   inject: [ConfigService],
-    // }),
     TypeOrmModule.forFeature([
       UserEntity,
       FriendRequestEntity,
