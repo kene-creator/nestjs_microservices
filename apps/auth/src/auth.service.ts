@@ -16,8 +16,8 @@ import { ExistingUserDto } from './dto/existing-user.dto';
 import { UserRepositoryInterface } from '@app/shared/interface/users.repository.interface';
 // import { UserJwt } from '@app/shared/interface/user-jwt.interface';
 import { FriendRequestEntity } from '@app/shared/entities/friend-request.entity';
-import { FriendRequestsRepository } from '@app/shared/repositories/friend-request.repository';
 import { UserRequest } from '@app/shared/interface/user-request.interface';
+import { FriendRequestsRepositoryInterface } from '@app/shared/interface/friend-request.repository.interface';
 
 @Injectable()
 export class AuthService {
@@ -25,7 +25,7 @@ export class AuthService {
     @Inject('UserRepositoryInterface')
     private readonly userRepository: UserRepositoryInterface,
     @Inject('FriendRequestsRepositoryInterface')
-    private readonly friendRequestsRepository: FriendRequestsRepository,
+    private readonly friendRequestsRepository: FriendRequestsRepositoryInterface,
     private readonly jwtService: JwtService,
   ) {}
 
