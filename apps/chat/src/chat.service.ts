@@ -9,9 +9,9 @@ import { NewMessageDto } from './dto/NewMessageDto';
 @Injectable()
 export class ChatService {
   constructor(
-    @Inject('ConversationsRepositoryInterface')
+    @Inject('ConversationsRepository')
     private readonly conversationsRepository: ConversationsRepositoryInterface,
-    @Inject('MessagesRepositoryInterface')
+    @Inject('MessagesRepository')
     private readonly messagesRepository: MessagesRepositoryInterface,
     @Inject('AUTH_SERVICE') private readonly authService: ClientProxy,
   ) {}

@@ -34,11 +34,11 @@ import { MessagesRepository } from '@app/shared/repositories/message.repository'
     ChatService,
     ChatGateway,
     {
-      provide: 'ConversationsRepositoryInterface',
+      provide: 'ConversationsRepository',
       useClass: ConversationsRepository,
     },
     {
-      provide: 'MessagesRepositoryInterface',
+      provide: 'MessagesRepository',
       useClass: MessagesRepository,
     },
   ],
