@@ -1,0 +1,17 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 739112243325.dkr.ecr.us-east-1.amazonaws.com
+  build:
+    commands:
+      - docker build -t api-auth -f ./api/apps/auth/Dockerfile .
+      - docker tag api-auth:latest 739112243325.dkr.ecr.us-east-1.amazonaws.com/auth:latest
+
+      - docker build -t api-presence -f ./api/apps/presence/Dockerfile .
+      - docker tag api-presence:latest 739112243325.dkr.ecr.us-east-1.amazonaws.com/presence:latest
+  post_build:
+    commands:
+      - docker push 739112243325.dkr.ecr.us-east-1.amazonaws.com/auth:latest
+      - docker push 739112243325.dkr.ecr.us-east-1.amazonaws.com/presence:latest
