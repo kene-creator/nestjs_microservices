@@ -12,9 +12,7 @@ import { Observable, catchError, of, switchMap } from 'rxjs';
 export class AuthGuard implements CanActivate {
   constructor(@Inject('AUTH_SERVICE') private authService: ClientProxy) {}
 
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  canActivate(context: ExecutionContext): boolean | Observable<boolean> {
     if (context.getType() !== 'http') {
       return false;
     }
