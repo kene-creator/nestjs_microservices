@@ -103,4 +103,14 @@ export class AuthController {
 
     return await this.authService.getFriendsList(payload.userId);
   }
+
+  @MessagePattern({ cmd: 'retrieve-token' })
+  async retrieveToken(
+    @Ctx() context: RmqContext,
+    @Payload() payload: { userId: number; email: string },
+  ) {
+    this.sharedService.acknowledgeMessage(context);
+
+    return await this.authService.getToken(payload.userId, payload.email);
+  }
 }
