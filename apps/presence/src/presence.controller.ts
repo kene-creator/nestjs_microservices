@@ -29,7 +29,7 @@ export class PresenceController {
       return foo;
     }
 
-    const f = await this.presenceService.getFoo();
+    const f = this.presenceService.getFoo();
     this.redisService.set('foo', f);
 
     return f;
