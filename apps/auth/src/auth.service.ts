@@ -49,7 +49,7 @@ export class AuthService {
       const { user, exp } = decoded;
       return { user, exp };
     } catch (error) {
-      throw new UnauthorizedException('Invalid token');
+      throw new UnauthorizedException('Invalid token provided');
     }
   }
 
